@@ -1,6 +1,6 @@
 # Evaluating the Distribution of Mental Health and Substance-Use Disorder Providers
 
-This repository contains the following files containing code for a locally-run Python Dash application. The application is an interactive dashboard written in Python and Dash demonstrating the distribution of King County Mental Health and Substance Use-Disorder Providers.
+This repository contains the following files necessary to run a local Python Dash application. The application is an interactive dashboard demonstrating the distribution of King County Mental Health and Substance Use-Disorder Providers given certain user-selected criteria.
 
 * `app_demo.mov`: Video demo of dashboard.
 * `app.py`: Creates dashboard using cleaned data.
