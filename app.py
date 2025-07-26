@@ -71,6 +71,13 @@ app.layout = html.Div(
     Input('audience-service-dropdown','value')
 )
 def decide_filter(filter_selection):
+    """
+    Input: List of possible filter options to select from. 
+
+    Goal: Inform options in dependent dropdown based on independent dropdown.
+
+    Output: Dependent dropdown options.
+    """
     return [{'label': i, 'value': i} for i in filter_options[filter_selection]]
 
 
@@ -79,6 +86,13 @@ def decide_filter(filter_selection):
     Input('filter-dropdown','options')
 )
 def set_filter_value(filter_dropdown_options):
+    """
+    Input: List of possible dropdown options.
+
+    Goal: Select initial dropdown value from list.
+
+    Output: Set initial dropdown value.
+    """
     return filter_dropdown_options[0]['value']
 
 
@@ -122,25 +136,33 @@ def display_graph(zipcode_dropdown:str, audience_service_dropdown:str):
     Input('filter-dropdown', 'value')
 )
 def update_table(zipcode_dropdown, audience_service_dropdown, filter_dropdown):
-    global dfs
-    try:
-        zipcode_df = df[df['zipcode']==zipcode_dropdown].reset_index(drop=True)
-        filter_df = zipcode_df[zipcode_df[audience_service_dropdown].apply(lambda x: filter_dropdown in x)]
+    """
+    Input: Selected zipcode, audience/service, and dependent filter.
+
+    Goal: Create a filtered data table with information from dropdowns.
+
+    Output: Data table showing filtered information.
+    """
+    global df
+    
+    zipcode_df = df[df['zipcode']==zipcode_dropdown].reset_index(drop=True) # Filter to selected zipcode
+    
+    # Filter to selected audience/service of interest, if it is provided
+    filter_df = zipcode_df[zipcode_df[audience_service_dropdown].apply(lambda x: filter_dropdown in x)] 
+
+    # If the data exists
+    if len(filter_df) > 0: 
+        # Convert list objects to comma-separated string
         filter_df['audience'] = filter_df.apply(lambda x: ", ".join(x['audience']), axis=1)
         filter_df['service'] = filter_df.apply(lambda x: ", ".join(x['service']), axis=1)
         filter_df['notes'] = filter_df.apply(lambda x: ", ".join(x['notes']), axis=1)
-        filter_df.loc[df['notes']=='', 'notes'] = None
 
         # Replace empty notes with None
         filter_df.loc[filter_df['notes'] == '', 'notes'] = None
 
         filter_df.reset_index(inplace=True,drop=True)
 
-        return filter_df.to_dict("records")
-
-    except Exception as e:
-        response_df = pd.DataFrame(data = ['No records meet this criteria. Please modify your selections.'], columns = ['response'])
-        return response_df
+    return filter_df.to_dict("records")
         
 
 if __name__ == '__main__':
